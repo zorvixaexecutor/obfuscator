@@ -12,16 +12,6 @@ local function fromHex(hex)
 	end))
 end
 
-function slf:makekey(str)
-	local key = tostring(math.random(100000000,999999999))
-	local t = {}
-	for i = 1, #str do
-		local c = string.byte(str, i)
-		local k = string.byte(key, 1 + ((i-1) % #key))
-		t[i] = string.char(bit32.bxor(c, k))
-	end
-	return toHex(table.concat(t)), key
-end
 
 function slf:key(str,key)
 	local t = {}
@@ -33,15 +23,6 @@ function slf:key(str,key)
 	return toHex(table.concat(t))
 end
 
-function slf:obfuscate(str, key)
-	local t = {}
-	for i = 1, #str do
-		local c = string.byte(str, i)
-		local k = string.byte(key, 1 + ((i-1) % #key))
-		t[i] = string.char(bit32.bxor(c, k))
-	end
-	return toHex(table.concat(t))
-end
 
 function slf:deobfuscate(hex, key)
 	local gibberish = fromHex(hex)
