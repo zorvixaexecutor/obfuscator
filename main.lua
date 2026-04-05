@@ -51,7 +51,12 @@ function slf:deobfuscate(hex, key)
 		local k = string.byte(key, 1 + ((i-1) % #key))
 		t[i] = string.char(bit32.bxor(c, k))
 	end
-	loadstring(table.concat(t))()
+	local success, err = pcall(function()
+		loadstring(table.concat(t))()
+	end)
+	if not success then
+		warn("Wrong key")
+	end
 end
 
 return slf
