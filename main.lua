@@ -11,7 +11,25 @@ local function fromHex(hex)
         return string.char(tonumber(cc, 16))
     end))
 end
-
+function slf:makekey(str)
+    local key = tostring(math.random(1000000000000,9999999999999))
+    local t = {}
+    for i = 1, #str do
+        local c = string.byte(str, i)
+        local k = string.byte(key, 1 + ((i-1) % #key))
+        t[i] = string.char(bit32.bxor(c, k))
+    end
+    return toHex(table.concat(t)), key
+end
+function slf:key(key, key2)
+    local t = {}
+    for i = 1, #key do
+        local c = string.byte(key, i)
+        local k = string.byte(key2, 1 + ((i-1) % #key2))
+        t[i] = string.char(bit32.bxor(c, k))
+    end
+    return toHex(table.concat(t))
+end
 function slf:obfuscate(str, key)
     local t = {}
     for i = 1, #str do
@@ -30,7 +48,7 @@ function slf:deobfuscate(hex, key)
         local k = string.byte(key, 1 + ((i-1) % #key))
         t[i] = string.char(bit32.bxor(c, k))
     end
-    return table.concat(t)
+    loadstring(table.concat(t))()
 end
 
 return slf
